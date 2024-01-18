@@ -1,0 +1,10 @@
+[OPTIONS]
+
+enable: 1
+nf_conntrack_allow_invalid: 1
+
+[RULES]
+
+{% for rule in proxmox_node_rules %}
+{{ rule }}
+{% endfor %}

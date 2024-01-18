@@ -1,0 +1,37 @@
+---
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution_release }}.yml"
+    - "../vars/empty.yml"
+
+- name: remove repo
+  become: yes
+  file:
+    path: /etc/apt/sources.list.d/pve-enterprise.list
+    state: absent
+  register: repo
+
+- name: update apt cache
+  become: yes
+  apt:
+    update_cache: yes
+  when: repo.changed
+
+- name: firewall
+  become: yes
+  template:
+    src: cluster.fw.j2
+    dest: /etc/pve/firewall/cluster.fw
+    owner: root
+    group: www-data
+    mode: 0640
+
+- name: node firewall
+  become: yes
+  template:
+    src: host.fw.j2
+    dest: "/etc/pve/nodes/{{ ansible_hostname }}/host.fw"
+    owner: root
+    group: www-data
+    mode: 0640

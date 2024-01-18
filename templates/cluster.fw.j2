@@ -1,0 +1,27 @@
+[OPTIONS]
+
+enable: 1
+
+{% for ipset in proxmox_ipset %}
+[IPSET {{ ipset.name }}]
+
+{{ ipset.entries | join('\n') }}
+
+{% endfor %}
+[RULES]
+
+{% if proxmox_rules|length > 0 %}
+{% for rule in proxmox_rules %}
+{{ rule }}
+{% endfor %}
+{% else %}
+IN ACCEPT -p tcp -dport 22 -log nolog
+IN ACCEPT -p tcp -dport 8006 -log nolog
+{% endif %}
+
+{% for group in proxmox_groups %}
+[group {{ group.name }}]
+
+{{ group.rules | join('\n') }}
+
+{% endfor %}
