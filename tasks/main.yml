@@ -18,6 +18,33 @@
     update_cache: yes
   when: repo.changed
 
+- name: install ifupdown2
+  become: yes
+  apt:
+    name: "ifupdown2"
+    state: present
+
+- name: install proxmox-ve
+  become: yes
+  apt:
+    name: "{{ proxmox_packages }}"
+    state: present
+  when: proxmox_packages|length > 0
+  register: proxmox
+
+- name: remove os-prober
+  become: yes
+  apt:
+    name: os-prober
+    state: absent
+  when: proxmox.changed
+
+- include_tasks:
+    file: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_bios_vendor|regex_replace('[ ,\\.]','') }}.yml"
+    - "none.yml"
+
 - name: firewall
   become: yes
   template:
