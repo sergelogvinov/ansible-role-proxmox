@@ -5,18 +5,39 @@
     - "../vars/{{ ansible_distribution_release }}.yml"
     - "../vars/empty.yml"
 
-- name: remove repo
+- name: update repository
   become: yes
-  file:
-    path: /etc/apt/sources.list.d/pve-enterprise.list
-    state: absent
-  register: repo
+  block:
+    - name: get proxmox apt key
+      get_url:
+        url: "https://enterprise.proxmox.com/debian/proxmox-release-{{ ansible_distribution_release }}.gpg"
+        dest: /etc/apt/keyrings/proxmox-release.gpg
 
-- name: update apt cache
-  become: yes
-  apt:
-    update_cache: yes
-  when: repo.changed
+    - name: apt clean
+      replace:
+        path: /etc/apt/sources.list
+        regexp: 'deb.*(download\.proxmox\.com).*'
+        replace: ''
+
+    - name: add pve-no-subscription repository
+      apt_repository:
+        repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/proxmox-release.gpg] http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription
+        state: present
+        filename: pve-no-subscription
+        update_cache: false
+      register: pve_no_subscription
+
+    - name: remove pve-enterprise repository
+      apt_repository:
+        repo: deb https://enterprise.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-enterprise
+        state: absent
+        update_cache: false
+      register: pve_enterprise
+
+    - name: apt update
+      apt:
+        update_cache: true
+      when: pve_no_subscription.changed or pve_enterprise.changed
 
 - name: install ifupdown2
   become: yes
@@ -32,6 +53,13 @@
   when: proxmox_packages|length > 0
   register: proxmox
 
+- name: remove repo
+  become: yes
+  file:
+    path: /etc/apt/sources.list.d/pve-enterprise.list
+    state: absent
+  when: proxmox.changed
+
 - name: remove os-prober
   become: yes
   apt:
@@ -44,6 +72,11 @@
   with_first_found:
     - "{{ ansible_bios_vendor|regex_replace('[ ,\\.]','') }}.yml"
     - "none.yml"
+
+- name: prepare files
+  shell: "touch /etc/pve/firewall/cluster.fw /etc/pve/nodes/{{ ansible_hostname }}/host.fw"
+  args:
+    creates: /etc/pve/firewall/cluster.fw
 
 - name: firewall
   become: yes
