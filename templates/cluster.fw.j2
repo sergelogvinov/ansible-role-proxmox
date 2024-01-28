@@ -2,7 +2,7 @@
 
 enable: 1
 
-{% for ipset in proxmox_ipset %}
+{% for ipset in proxmox_ipset|sort(attribute='name') %}
 [IPSET {{ ipset.name }}]
 
 {{ ipset.entries | join('\n') }}
