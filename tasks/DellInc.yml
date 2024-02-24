@@ -1,11 +1,14 @@
 ---
 
-- name: install proxmox-ve
-  become: yes
-  apt:
-    name: "proxmox-kernel-6.2.16-20-pve"
-    state: present
+- name: Pin kernel
+  when: ansible_bios_version|regex_search("^2.15", ignorecase=True)
+  block:
+    - name: install proxmox-ve
+      become: yes
+      apt:
+        name: "proxmox-kernel-6.2.16-20-pve"
+        state: present
 
-- name: pin proxmox kernel
-  become: yes
-  shell: proxmox-boot-tool kernel pin 6.2.16-20-pve
+    - name: pin proxmox kernel
+      become: yes
+      shell: proxmox-boot-tool kernel pin 6.2.16-20-pve
