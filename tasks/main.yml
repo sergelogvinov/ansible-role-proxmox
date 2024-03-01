@@ -4,9 +4,22 @@
   with_first_found:
     - "../vars/{{ ansible_distribution_release }}.yml"
     - "../vars/empty.yml"
+  tags: ['proxmox']
+
+- name: Add ssh keys
+  become: yes
+  authorized_key:
+    path: /root/.ssh/authorized_keys2
+    user: root
+    state: present
+    key: "{{ proxmox_sshkey }}"
+    exclusive: true
+  when: proxmox_sshkey
+  tags: ['proxmox']
 
 - name: update repository
   become: yes
+  tags: ['proxmox']
   block:
     - name: get proxmox apt key
       get_url:
@@ -44,6 +57,7 @@
   apt:
     name: "ifupdown2"
     state: present
+  tags: ['proxmox']
 
 - name: install proxmox-ve
   become: yes
@@ -52,6 +66,7 @@
     state: present
   when: proxmox_packages|length > 0
   register: proxmox
+  tags: ['proxmox']
 
 - name: remove repo
   become: yes
@@ -59,6 +74,7 @@
     path: /etc/apt/sources.list.d/pve-enterprise.list
     state: absent
   when: proxmox.changed
+  tags: ['proxmox']
 
 - name: remove os-prober
   become: yes
@@ -66,17 +82,20 @@
     name: os-prober
     state: absent
   when: proxmox.changed
+  tags: ['proxmox']
 
 - include_tasks:
     file: "{{ item }}"
   with_first_found:
     - "{{ ansible_bios_vendor|regex_replace('[ ,\\.]','') }}.yml"
     - "none.yml"
+  tags: ['proxmox']
 
 - name: prepare cluster firewall
   shell: "touch /etc/pve/firewall/cluster.fw"
   args:
     creates: /etc/pve/firewall/cluster.fw
+  tags: ['proxmox']
 
 - name: firewall
   become: yes
@@ -86,11 +105,13 @@
     owner: root
     group: www-data
     mode: 0640
+  tags: ['proxmox']
 
 - name: prepare files
   shell: "touch /etc/pve/nodes/{{ ansible_hostname }}/host.fw"
   args:
     creates: "/etc/pve/nodes/{{ ansible_hostname }}/host.fw"
+  tags: ['proxmox']
 
 - name: node firewall
   become: yes
@@ -101,3 +122,4 @@
     group: www-data
     mode: 0640
   ignore_errors: yes
+  tags: ['proxmox']

@@ -1,5 +1,11 @@
 ---
 
+# Proxmox manages the ssh keys by itself. But if proxmox is not working properly, you cannot ssh to the server.
+# In this case, you can add your ssh key to the server.
+# It stores the ssh key in the /root/.ssh/authorized_keys2 file.
+proxmox_sshkey: ~
+# proxmox_sshkey: https://github.com/sergelogvinov.keys
+
 proxmox_ipset: []
   # - name: admins
   #   entries:
