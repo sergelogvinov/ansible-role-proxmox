@@ -1,0 +1,16 @@
+pve: pve
+	comment Proxmox VE authentication server
+
+{% for openid in proxmox_openids %}
+openid: {{ openid.id }}
+	issuer-url {{ openid.issuer }}
+	client-id {{ openid.clientid }}
+	client-key {{ openid.clientkey }}
+	default {{ openid.default | default('0') }}
+	prompt {{ openid.prompt | default('login') }}
+	scopes {{ openid.scopes | default('email profile openid') }}
+	username-claim email
+{% endfor %}
+
+pam: pam
+	comment Linux PAM standard authentication

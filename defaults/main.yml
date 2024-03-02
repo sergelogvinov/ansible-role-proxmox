@@ -6,6 +6,14 @@
 proxmox_sshkey: ~
 # proxmox_sshkey: https://github.com/sergelogvinov.keys
 
+proxmox_openids: []
+  # - id: GoogleAuth
+  #   issuer: "https://accounts.google.com"
+  #   clientid: "1234567890.apps.googleusercontent.com"
+  #   clientkey: "abcdefghijklmnopqrstuvwxyz"
+  #   prompt: login
+  #   scopes: "email profile openid"
+
 proxmox_ipset: []
   # - name: admins
   #   entries:

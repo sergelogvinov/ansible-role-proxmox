@@ -21,6 +21,13 @@
   become: yes
   tags: ['proxmox']
   block:
+    - name: remove proxmox repositoryes
+      file:
+        path: "/etc/apt/sources.list.d/{{ item }}"
+        state: absent
+      with_items:
+        - proxmox.list
+
     - name: get proxmox apt key
       get_url:
         url: "https://enterprise.proxmox.com/debian/proxmox-release-{{ ansible_distribution_release }}.gpg"
@@ -122,4 +129,15 @@
     group: www-data
     mode: 0640
   ignore_errors: yes
+  tags: ['proxmox']
+
+- name: cluster oauth2
+  become: yes
+  template:
+    src: domains.cfg.j2
+    dest: "/etc/pve/domains.cfg"
+    owner: root
+    group: www-data
+    mode: 0640
+  when: proxmox_openids|length > 0
   tags: ['proxmox']
