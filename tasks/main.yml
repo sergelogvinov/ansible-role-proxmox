@@ -131,13 +131,19 @@
   ignore_errors: yes
   tags: ['proxmox']
 
-- name: cluster oauth2
-  become: yes
-  template:
-    src: domains.cfg.j2
-    dest: "/etc/pve/domains.cfg"
-    owner: root
-    group: www-data
-    mode: 0640
-  when: proxmox_openids|length > 0
+- become: yes
   tags: ['proxmox']
+  block:
+    - name: prepare files
+      shell: "touch /etc/pve/domains.cfg"
+      args:
+        creates: "/etc/pve/domains.cfg"
+    - name: cluster oauth2
+      become: yes
+      template:
+        src: domains.cfg.j2
+        dest: "/etc/pve/domains.cfg"
+        owner: root
+        group: www-data
+        mode: 0640
+      when: proxmox_openids|length > 0

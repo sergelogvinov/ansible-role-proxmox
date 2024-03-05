@@ -8,6 +8,7 @@ proxmox_sshkey: ~
 
 proxmox_openids: []
   # - id: GoogleAuth
+  #   default: 1|0
   #   issuer: "https://accounts.google.com"
   #   clientid: "1234567890.apps.googleusercontent.com"
   #   clientkey: "abcdefghijklmnopqrstuvwxyz"
