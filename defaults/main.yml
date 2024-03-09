@@ -6,6 +6,15 @@
 proxmox_sshkey: ~
 # proxmox_sshkey: https://github.com/sergelogvinov.keys
 
+proxmox_users: []
+  # - name: admin@domain@GoogleAuth
+  #   role: operator
+  #   path: /
+
+proxmox_roles: []
+  # - name: operator
+  #   priviledges: [VM.Audit,VM.Console,VM.Monitor,VM.PowerMgmt,Datastore.Audit]
+
 proxmox_openids: []
   # - id: GoogleAuth
   #   default: 1|0
