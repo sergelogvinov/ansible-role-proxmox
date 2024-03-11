@@ -134,9 +134,17 @@
       lineinfile:
         path: "/etc/pve/user.cfg"
         regexp: "^role:{{ item.name }}:"
+        insertafter: "^role:"
         line: "role:{{ item.name }}:{{ item.priviledges|join(',') }}:"
       with_items: "{{ proxmox_roles }}"
 
+    - name: ensure users exists
+      lineinfile:
+        path: "/etc/pve/user.cfg"
+        regexp: "^user:{{ item.name }}:"
+        insertafter: "^user:"
+        line: "user:{{ item.name }}:1:0::::::"
+      with_items: "{{ proxmox_users }}"
     - name: update users permissions
       lineinfile:
         path: "/etc/pve/user.cfg"
