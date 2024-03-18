@@ -27,6 +27,7 @@
         state: absent
       with_items:
         - proxmox.list
+        - ceph.list
 
     - name: get proxmox apt key
       get_url:
