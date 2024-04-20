@@ -131,6 +131,10 @@
   tags: ['proxmox']
   when: proxmox_roles|length > 0 or proxmox_users|length > 0
   block:
+    - name: prepare user file
+      shell: "touch /etc/pve/user.cfg"
+      args:
+        creates: /etc/pve/user.cfg
     - name: update role
       lineinfile:
         path: "/etc/pve/user.cfg"

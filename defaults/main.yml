@@ -11,6 +11,7 @@ proxmox_users: []
   #   role: operator
   #   path: /
 
+# https://pve.proxmox.com/wiki/User_Management
 proxmox_roles: []
   # - name: operator
   #   priviledges: [VM.Audit,VM.Console,VM.Monitor,VM.PowerMgmt,Datastore.Audit]
