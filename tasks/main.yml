@@ -1,13 +1,12 @@
 ---
-
 - include_vars: "{{ item }}"
   with_first_found:
     - "../vars/{{ ansible_distribution_release }}.yml"
     - "../vars/empty.yml"
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
 - name: Add ssh keys
-  become: yes
+  become: true
   authorized_key:
     path: /root/.ssh/authorized_keys2
     user: root
@@ -15,13 +14,13 @@
     key: "{{ proxmox_sshkey }}"
     exclusive: true
   when: proxmox_sshkey
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
 - name: update repository
-  become: yes
-  tags: ['proxmox']
+  become: true
+  tags: ["proxmox"]
   block:
-    - name: remove proxmox repositoryes
+    - name: remove proxmox repositortrue
       file:
         path: "/etc/apt/sources.list.d/{{ item }}"
         state: absent
@@ -38,7 +37,7 @@
       replace:
         path: /etc/apt/sources.list
         regexp: 'deb.*(download\.proxmox\.com).*'
-        replace: ''
+        replace: ""
 
     - name: add pve-no-subscription repository
       apt_repository:
@@ -61,46 +60,46 @@
       when: pve_no_subscription.changed or pve_enterprise.changed
 
 - name: install ifupdown2
-  become: yes
+  become: true
   apt:
     name: "ifupdown2"
     state: present
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
 - name: install proxmox-ve
-  become: yes
+  become: true
   apt:
     name: "{{ proxmox_packages }}"
     state: present
   when: proxmox_packages|length > 0
   register: proxmox
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
 - name: remove repo
-  become: yes
+  become: true
   file:
     path: /etc/apt/sources.list.d/pve-enterprise.list
     state: absent
   when: proxmox.changed
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
 - name: remove os-prober
-  become: yes
+  become: true
   apt:
     name: os-prober
     state: absent
   when: proxmox.changed
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
 - include_tasks:
     file: "{{ item }}"
   with_first_found:
     - "{{ ansible_bios_vendor|regex_replace('[ ,\\.]','') }}.yml"
     - "none.yml"
-  tags: ['proxmox']
+  tags: ["proxmox"]
 
-- become: yes
-  tags: ['proxmox']
+- become: true
+  tags: ["proxmox"]
   block:
     - name: prepare cluster firewall
       shell: "touch /etc/pve/firewall/cluster.fw"
@@ -125,10 +124,10 @@
         owner: root
         group: www-data
         mode: 0640
-      ignore_errors: yes
+      ignore_errors: true
 
-- become: yes
-  tags: ['proxmox']
+- become: true
+  tags: ["proxmox"]
   when: proxmox_roles|length > 0 or proxmox_users|length > 0
   block:
     - name: prepare user file
@@ -140,7 +139,7 @@
         path: "/etc/pve/user.cfg"
         regexp: "^role:{{ item.name }}:"
         insertafter: "^role:"
-        line: "role:{{ item.name }}:{{ item.priviledges|join(',') }}:"
+        line: "role:{{ item.name }}:{{ item.privileges|join(',') }}:"
       with_items: "{{ proxmox_roles }}"
 
     - name: ensure users exists
@@ -158,8 +157,8 @@
         line: "acl:1:{{ item.path }}:{{ item.name }}:{{ item.role }}:"
       with_items: "{{ proxmox_users }}"
 
-- become: yes
-  tags: ['proxmox']
+- become: true
+  tags: ["proxmox"]
   when: proxmox_openids|length > 0
   block:
     - name: prepare files

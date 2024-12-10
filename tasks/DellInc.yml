@@ -4,11 +4,11 @@
   when: ansible_bios_version|regex_search("^2.15", ignorecase=True)
   block:
     - name: install proxmox-ve
-      become: yes
+      become: true
       apt:
         name: "proxmox-kernel-6.2.16-20-pve"
         state: present
 
     - name: pin proxmox kernel
-      become: yes
+      become: true
       shell: proxmox-boot-tool kernel pin 6.2.16-20-pve

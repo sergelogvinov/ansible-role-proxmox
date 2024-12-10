@@ -14,7 +14,7 @@ proxmox_users: []
 # https://pve.proxmox.com/wiki/User_Management
 proxmox_roles: []
   # - name: operator
-  #   priviledges: [VM.Audit,VM.Console,VM.Monitor,VM.PowerMgmt,Datastore.Audit]
+  #   privileges: [VM.Audit,VM.Console,VM.Monitor,VM.PowerMgmt,Datastore.Audit]
 
 proxmox_openids: []
   # - id: GoogleAuth
