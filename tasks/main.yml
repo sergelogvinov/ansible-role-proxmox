@@ -13,7 +13,7 @@
     state: present
     key: "{{ proxmox_sshkey }}"
     exclusive: true
-  when: proxmox_sshkey
+  when: proxmox_sshkey != ""
   tags: ["proxmox"]
 
 - name: update repository
@@ -38,6 +38,7 @@
         path: /etc/apt/sources.list
         regexp: 'deb.*(download\.proxmox\.com).*'
         replace: ""
+      ignore_errors: true
 
     - name: add pve-no-subscription repository
       apt_repository:

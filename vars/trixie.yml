@@ -1,0 +1,4 @@
+---
+
+proxmox_packages:
+  - proxmox-ve
