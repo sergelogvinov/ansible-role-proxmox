@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/sergelogvinov/ansible-role-proxmox/compare/v0.2.0...v0.3.0) (2026-01-31)
+
+
+### Features
+
+* trixie support ([20bec9b](https://github.com/sergelogvinov/ansible-role-proxmox/commit/20bec9b747eb7c3e841f5cfb9da9fc0b4ff6f364))
+
+
+### Bug Fixes
+
+* ansible deprecation warning ([07c5831](https://github.com/sergelogvinov/ansible-role-proxmox/commit/07c5831a2cc011a90af9d415ed39b9a5c81fcc1d))
+
 ## [0.2.0](https://github.com/sergelogvinov/ansible-role-proxmox/compare/v0.1.0...v0.2.0) (2024-12-10)
 
 
