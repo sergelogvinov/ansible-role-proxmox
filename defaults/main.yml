@@ -42,4 +42,4 @@ proxmox_rules:
   - GROUP admin
 
 proxmox_node_rules: []
-  # - IN NeighborDiscovery(ACCEPT) -i {{ ansible_default_ipv6.interface }} -log nolog
+  # - IN NeighborDiscovery(ACCEPT) -i {{ ansible_facts["default_ipv6"]["interface"] }} -log nolog

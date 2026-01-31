@@ -1,7 +1,7 @@
 ---
 
 - name: Pin kernel
-  when: ansible_bios_version|regex_search("^2.15", ignorecase=True)
+  when: ansible_facts["bios_version"]|regex_search("^2.15", ignorecase=True)
   block:
     - name: install proxmox-ve
       become: true
