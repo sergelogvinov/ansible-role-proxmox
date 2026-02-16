@@ -43,3 +43,7 @@ proxmox_rules:
 
 proxmox_node_rules: []
   # - IN NeighborDiscovery(ACCEPT) -i {{ ansible_facts["default_ipv6"]["interface"] }} -log nolog
+
+
+proxmox_scheduler_version: "0.10.1"
+proxmox_scheduler_base_url: "https://github.com/sergelogvinov/karpenter-provider-proxmox/releases/download"

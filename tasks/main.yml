@@ -1,7 +1,14 @@
 ---
-- include_vars: "{{ item }}"
+
+- ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "../vars/{{ ansible_facts['distribution_release'] }}.yml"
+    - "../vars/empty.yml"
+  tags: ["proxmox"]
+
+- ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_facts['architecture'] }}.yml"
     - "../vars/empty.yml"
   tags: ["proxmox"]
 
@@ -173,3 +180,6 @@
         owner: root
         group: www-data
         mode: 0640
+
+- name: Install scheduler
+  include_tasks: scheduler.yml

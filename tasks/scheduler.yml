@@ -1,0 +1,9 @@
+---
+
+- name: Download proxmox-scheduler
+  become: true
+  tags: ["proxmox", "karpenter"]
+  block:
+    - name: Install proxmox-scheduler
+      apt:
+        deb: "{{ proxmox_scheduler_base_url }}/v{{ proxmox_scheduler_version }}/proxmox-scheduler_{{ proxmox_scheduler_version }}_linux_{{ proxmox_scheduler_arch }}.deb"
