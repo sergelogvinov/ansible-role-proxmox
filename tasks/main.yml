@@ -36,7 +36,7 @@
         - ceph.list
 
     - name: get proxmox apt key
-      get_url:
+      ansible.builtin.get_url:
         url: "https://enterprise.proxmox.com/debian/proxmox-release-{{ ansible_facts['distribution_release'] }}.gpg"
         dest: /etc/apt/keyrings/proxmox-release.gpg
 
@@ -48,7 +48,7 @@
       ignore_errors: true
 
     - name: add pve-no-subscription repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/proxmox-release.gpg] http://download.proxmox.com/debian/pve {{ ansible_facts['distribution_release'] }} pve-no-subscription
         state: present
         filename: pve-no-subscription
@@ -56,44 +56,43 @@
       register: pve_no_subscription
 
     - name: remove pve-enterprise repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb https://enterprise.proxmox.com/debian/pve {{ ansible_facts['distribution_release'] }} pve-enterprise
         state: absent
         update_cache: false
       register: pve_enterprise
 
+    - name: remove pve-enterprise repository file
+      become: true
+      file:
+        path: /etc/apt/sources.list.d/pve-enterprise.list
+        state: absent
+      tags: ["proxmox"]
+
     - name: apt update
-      apt:
+      ansible.builtin.apt:
         update_cache: true
       when: pve_no_subscription.changed or pve_enterprise.changed
 
 - name: install ifupdown2
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "ifupdown2"
     state: present
   tags: ["proxmox"]
 
 - name: install proxmox-ve
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ proxmox_packages }}"
     state: present
   when: proxmox_packages|length > 0
   register: proxmox
   tags: ["proxmox"]
 
-- name: remove repo
-  become: true
-  file:
-    path: /etc/apt/sources.list.d/pve-enterprise.list
-    state: absent
-  when: proxmox.changed
-  tags: ["proxmox"]
-
 - name: remove os-prober
   become: true
-  apt:
+  ansible.builtin.apt:
     name: os-prober
     state: absent
   when: proxmox.changed
