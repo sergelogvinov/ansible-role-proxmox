@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/sergelogvinov/ansible-role-proxmox/compare/v0.3.0...v0.4.0) (2026-02-21)
+
+
+### Features
+
+* install proxmox scheduler ([fb07b67](https://github.com/sergelogvinov/ansible-role-proxmox/commit/fb07b67813c755537ab3029b0fcc10888bc81767))
+
+
+### Bug Fixes
+
+* apt-key deprications ([0532b26](https://github.com/sergelogvinov/ansible-role-proxmox/commit/0532b26c2974d8998be9b096f49682cc39447d78))
+* builtin apt ([d3b15ac](https://github.com/sergelogvinov/ansible-role-proxmox/commit/d3b15ac226db3b0f00241e8286503e5e8d144213))
+
 ## [0.3.0](https://github.com/sergelogvinov/ansible-role-proxmox/compare/v0.2.0...v0.3.0) (2026-01-31)
 
 
