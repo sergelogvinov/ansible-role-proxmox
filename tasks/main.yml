@@ -35,6 +35,12 @@
         - proxmox.list
         - ceph.list
 
+    - name: install gpg
+      become: true
+      ansible.builtin.apt:
+        name: gpg
+        state: present
+
     - name: get proxmox apt key
       ansible.builtin.get_url:
         url: "https://enterprise.proxmox.com/debian/proxmox-release-{{ ansible_facts['distribution_release'] }}.gpg"
@@ -77,8 +83,8 @@
 - name: install ifupdown2
   become: true
   ansible.builtin.apt:
-    name: "ifupdown2"
-    state: present
+    name: ifupdown2
+    state: latest
   tags: ["proxmox"]
 
 - name: install proxmox-ve
