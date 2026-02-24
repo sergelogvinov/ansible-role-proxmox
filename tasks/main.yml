@@ -75,6 +75,13 @@
         state: absent
       tags: ["proxmox"]
 
+    - name: remove pve-enterprise sources repository file
+      become: true
+      file:
+        path: /etc/apt/sources.list.d/pve-enterprise.sources
+        state: absent
+      tags: ["proxmox"]
+
     - name: apt update
       ansible.builtin.apt:
         update_cache: true
