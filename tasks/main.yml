@@ -159,7 +159,7 @@
         path: "/etc/pve/user.cfg"
         regexp: "^role:{{ item.name }}:"
         insertafter: "^role:"
-        line: "role:{{ item.name }}:{{ item.privileges|join(',') }}:"
+        line: "role:{{ item.name }}:{{ item.privileges|sort|join(',') }}:"
       with_items: "{{ proxmox_roles }}"
 
     - name: ensure users exists
@@ -177,7 +177,8 @@
         line: "acl:1:{{ item.path }}:{{ item.name }}:{{ item.role }}:"
       with_items: "{{ proxmox_users }}"
 
-- become: true
+- name: openid
+  become: true
   tags: ["proxmox"]
   when: proxmox_openids|length > 0
   block:
@@ -192,6 +193,25 @@
         owner: root
         group: www-data
         mode: 0640
+
+- name: acme account
+  become: true
+  tags: ["proxmox"]
+  when: proxmox_acme_email is defined and proxmox_acme_email != ""
+  block:
+    - name: verify acme account
+      command: pvenode acme account list
+      register: acme_account
+
+    - name: set acme account
+      expect:
+        command: pvenode acme account register default {{ proxmox_acme_email }} --directory https://acme-v02.api.letsencrypt.org/directory
+        responses:
+          "Do you agree to the above terms": y
+      when: acme_account.stdout is not search('default')
+    - name: set acme domain
+      command: pvenode config set --acme domains="{{ ansible_facts['hostname'] }}.{{ proxmox_acme_domain }}"
+      when: acme_account.stdout is not search('default') and proxmox_acme_domain != ""
 
 - name: Install scheduler
   include_tasks: scheduler.yml

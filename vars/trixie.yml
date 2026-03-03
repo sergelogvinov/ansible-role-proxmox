@@ -2,3 +2,4 @@
 
 proxmox_packages:
   - proxmox-ve
+  - python3-pexpect
