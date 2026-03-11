@@ -197,7 +197,7 @@
 - name: acme account
   become: true
   tags: ["proxmox"]
-  when: proxmox_acme_email is defined and proxmox_acme_email != ""
+  when: (proxmox_acme_email is defined) and (proxmox_acme_email | length > 0)
   block:
     - name: verify acme account
       command: pvenode acme account list

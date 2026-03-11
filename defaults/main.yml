@@ -6,7 +6,7 @@
 proxmox_sshkey: ~
 # proxmox_sshkey: https://github.com/sergelogvinov.keys
 
-proxmox_acme_email: ~
+proxmox_acme_email: ""
 proxmox_acme_domain: "{{ ansible_facts['fqdn'] }}"
 
 proxmox_users: []
