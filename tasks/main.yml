@@ -23,35 +23,24 @@
   when: proxmox_sshkey != ""
   tags: ["proxmox"]
 
-- name: update repository
+- name: install gpg
+  become: true
+  ansible.builtin.apt:
+    name: gpg
+    state: present
+  tags: ["proxmox"]
+
+- name: Update repository
+  include_tasks: update.yml
+
+- name: Add proxmox repository
   become: true
   tags: ["proxmox"]
   block:
-    - name: remove proxmox repositortrue
-      file:
-        path: "/etc/apt/sources.list.d/{{ item }}"
-        state: absent
-      with_items:
-        - proxmox.list
-        - ceph.list
-
-    - name: install gpg
-      become: true
-      ansible.builtin.apt:
-        name: gpg
-        state: present
-
     - name: get proxmox apt key
       ansible.builtin.get_url:
         url: "https://enterprise.proxmox.com/debian/proxmox-release-{{ ansible_facts['distribution_release'] }}.gpg"
         dest: /etc/apt/keyrings/proxmox-release.gpg
-
-    - name: apt clean
-      replace:
-        path: /etc/apt/sources.list
-        regexp: 'deb.*(download\.proxmox\.com).*'
-        replace: ""
-      ignore_errors: true
 
     - name: add pve-no-subscription repository
       ansible.builtin.apt_repository:
@@ -61,31 +50,10 @@
         update_cache: false
       register: pve_no_subscription
 
-    - name: remove pve-enterprise repository
-      ansible.builtin.apt_repository:
-        repo: deb https://enterprise.proxmox.com/debian/pve {{ ansible_facts['distribution_release'] }} pve-enterprise
-        state: absent
-        update_cache: false
-      register: pve_enterprise
-
-    - name: remove pve-enterprise repository file
-      become: true
-      file:
-        path: /etc/apt/sources.list.d/pve-enterprise.list
-        state: absent
-      tags: ["proxmox"]
-
-    - name: remove pve-enterprise sources repository file
-      become: true
-      file:
-        path: /etc/apt/sources.list.d/pve-enterprise.sources
-        state: absent
-      tags: ["proxmox"]
-
     - name: apt update
       ansible.builtin.apt:
         update_cache: true
-      when: pve_no_subscription.changed or pve_enterprise.changed
+      when: pve_no_subscription.changed
 
 - name: install ifupdown2
   become: true
@@ -110,6 +78,9 @@
     state: absent
   when: proxmox.changed
   tags: ["proxmox"]
+
+- name: Update repository
+  include_tasks: update.yml
 
 - include_tasks:
     file: "{{ item }}"

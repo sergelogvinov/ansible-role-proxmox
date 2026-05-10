@@ -1,0 +1,43 @@
+- name: update repository
+  become: true
+  tags: ["proxmox"]
+  block:
+    - name: remove proxmox repository files
+      file:
+        path: "/etc/apt/sources.list.d/{{ item }}"
+        state: absent
+      with_items:
+        - proxmox.list
+        - ceph.list
+
+    - name: apt clean
+      replace:
+        path: /etc/apt/sources.list
+        regexp: 'deb.*(download\.proxmox\.com).*'
+        replace: ""
+      ignore_errors: true
+
+    - name: remove pve-enterprise repository
+      ansible.builtin.apt_repository:
+        repo: deb https://enterprise.proxmox.com/debian/pve {{ ansible_facts['distribution_release'] }} pve-enterprise
+        state: absent
+        update_cache: false
+      register: pve_enterprise
+
+    - name: remove pve-enterprise repository file
+      become: true
+      file:
+        path: /etc/apt/sources.list.d/pve-enterprise.list
+        state: absent
+      tags: ["proxmox"]
+
+    - name: remove pve-enterprise sources repository file
+      become: true
+      file:
+        path: /etc/apt/sources.list.d/pve-enterprise.sources
+        state: absent
+      tags: ["proxmox"]
+
+    - name: apt update
+      ansible.builtin.apt:
+        update_cache: true
