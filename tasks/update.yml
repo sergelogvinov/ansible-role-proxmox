@@ -10,7 +10,7 @@
         - proxmox.list
         - ceph.list
         - proxmox.sources
-        - ceph.sources
+        # - ceph.sources
         - pve-install-repo.sources
 
     - name: apt clean
