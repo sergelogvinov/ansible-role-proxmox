@@ -89,6 +89,16 @@
     - "none.yml"
   tags: ["proxmox"]
 
+- name: net device vf
+  become: true
+  ansible.builtin.file:
+    path: /etc/udev/rules.d/70-virtual-function-pinning.rules
+    state: "{{ 'touch' if proxmox_net_vf == 'disabled' else 'absent' }}"
+    owner: root
+    group: root
+    mode: 0640
+  tags: ["proxmox"]
+
 - become: true
   tags: ["proxmox"]
   block:
