@@ -97,6 +97,8 @@
     owner: root
     group: root
     mode: 0640
+    modification_time: "{{ 'preserve' if proxmox_net_vf == 'disabled' else omit }}"
+    access_time: "{{ 'preserve' if proxmox_net_vf == 'disabled' else omit }}"
   tags: ["proxmox"]
 
 - become: true
