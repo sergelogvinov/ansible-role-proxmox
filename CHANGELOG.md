@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0](https://github.com/sergelogvinov/ansible-role-proxmox/compare/v0.4.0...v0.5.0) (2026-11-13)
+
+
+### Features
+
+* update version ([4d256df](https://github.com/sergelogvinov/ansible-role-proxmox/commit/4d256df2eb3ff062cd989e32337e0f1b3634fdbf))
+
+
+### Bug Fixes
+
+* vf pinning ([f225c40](https://github.com/sergelogvinov/ansible-role-proxmox/commit/f225c4056d9b4478a0f2ff44d9e53879e4efbf7b))
+* vf pinning ([08bbc99](https://github.com/sergelogvinov/ansible-role-proxmox/commit/08bbc99f447a90fa2a00dce73e98f5e29c5f8786))
+
 ## [0.4.0](https://github.com/sergelogvinov/ansible-role-proxmox/compare/v0.3.0...v0.4.0) (2026-07-10)
 
 
